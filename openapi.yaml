@@ -1,1 +1,198 @@
-test
+openapi: 3.0.1
+security:
+  - BearerAuth: []
+
+info:
+  title: SIMPL-Open Catalogue Search API
+  description: This API is for the quick search and advanced search of Resource descriptions in the Catalogue.
+  version: v1.0.6
+  contact:
+    name: Simpl Programme
+    email: cnect-simpl@ec.europa.eu
+    url: https://simpl-programme.ec.europa.eu/
+  license:
+    name: European Union Public License (EUPL) 1.2
+    url: "https://interoperable-europe.ec.europa.eu/sites/default/files/custom-page/attachment/eupl_v1.2_en.pdf"
+
+servers:
+  - url: https://adapter.dev.simpl-europe.eu
+    description: Generated server url
+
+paths:
+  /searchCatalogue/quick:
+    post:
+      tags:
+        - search
+      summary: Quick search in the Catalogue
+      operationId: queryCatalogueQuickSearch
+      parameters:
+        - name: searchString
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Results from a quick search in the Catalogue
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SearchResultList'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                title: Unauthorized
+                detail: The access token is missing or expired
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                title: Internal Server Error
+                detail: The server encountered an unexpected condition which prevented it from fulfilling the request
+
+  /searchCatalogue/advanced:
+    post:
+      tags:
+        - search
+      summary: Advanced search in the catalogue based on provided vocabulary
+      operationId: queryCatalogueAdvancedSearch
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AdvancedSearchRequest'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SearchResultList'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                title: Unauthorized
+                detail: The access token is missing or expired
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                title: Internal Server Error
+                detail: The server encountered an unexpected condition which prevented it from fulfilling the request
+
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  responses:
+    ErrorResponse:
+      description: Error response
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+
+  schemas:
+    ErrorResponse:
+      type: object
+      required:
+        - title
+      properties:
+        title:
+          type: string
+          description: Short, human-readable summary of the error
+        detail:
+          type: string
+          description: Detailed explanation for the error
+    AdvancedSearchRequest:
+      type: object
+      properties:
+        simpl:OfferingPrice:
+          type: object
+          properties:
+            '@type':
+              type: string
+              example: simpl:OfferingPrice
+            price:
+              type: object
+              properties:
+                op1:
+                  type: string
+                  example: '>='
+                value1:
+                  type: string
+                  example: '15'
+                op2:
+                  type: string
+                  example: '<'
+                value2:
+                  type: string
+                  example: '150'
+        simpl:GeneralServiceProperties:
+          type: object
+          properties:
+            '@type':
+              type: string
+              example: simpl:GeneralServiceProperties
+            name:
+              type: string
+              example: szym
+        simpl:ContractTemplate:
+          type: object
+          properties:
+            '@type':
+              type: string
+              example: simpl:ContractTemplate
+            contractTemplateDocument:
+              type: string
+              example: Contract Template xxx
+    SearchResultList:
+      type: object
+      properties:
+        totalCount:
+          type: integer
+          description: Total number of search results
+        items:
+          description: List of search results
+          type: array
+          items:
+            type: object
+            properties:
+              item:
+                description: Individual search result
+                type: object
+                properties:
+                  name:
+                    description: Name of the resource
+                    type: string
+                  description:
+                    description: Short descriptive text of the resource
+                    type: string
+                additionalProperties: true
+
+      example:
+        totalCount: 1
+        items:
+          - item:
+              name: Example Resource
+              description: This text serves as the short description of the Example Resource
+
