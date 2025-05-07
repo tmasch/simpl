@@ -126,45 +126,16 @@ components:
     AdvancedSearchRequest:
       type: object
       properties:
-        simpl:OfferingPrice:
+        GeneralServiceProperties:
           type: object
           properties:
             '@type':
               type: string
-              example: simpl:OfferingPrice
-            price:
-              type: object
-              properties:
-                op1:
-                  type: string
-                  example: '>='
-                value1:
-                  type: string
-                  example: '15'
-                op2:
-                  type: string
-                  example: '<'
-                value2:
-                  type: string
-                  example: '150'
-        simpl:GeneralServiceProperties:
-          type: object
-          properties:
-            '@type':
-              type: string
-              example: simpl:GeneralServiceProperties
             name:
               type: string
-              example: szym
-        simpl:ContractTemplate:
-          type: object
-          properties:
-            '@type':
-              type: string
-              example: simpl:ContractTemplate
-            contractTemplateDocument:
-              type: string
-              example: Contract Template xxx
+      example:
+        GeneralServiceProperties:
+          name: Example resource name
     SearchResultList:
       type: object
       properties:
