@@ -5,11 +5,11 @@ security:
 info:
   title: SIMPL-Open Catalogue Search API
   description: This API is for the quick search and advanced search of Resource descriptions in the Catalogue.
-  version: v1.0.6
+  version: 1.0.6
   contact:
     name: Simpl Programme
     email: cnect-simpl@ec.europa.eu
-    url: https://simpl-programme.ec.europa.eu/
+    url: https://simpl-programme.ec.europa.eu/v1
   license:
     name: European Union Public License (EUPL) 1.2
     url: "https://interoperable-europe.ec.europa.eu/sites/default/files/custom-page/attachment/eupl_v1.2_en.pdf"
