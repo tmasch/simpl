@@ -75,9 +75,6 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/AdvancedSearchRequest'
-            example:
-              generalServiceProperties:
-                name: Example resource name
       responses:
         '200':
           description: OK
