@@ -126,7 +126,7 @@ components:
     AdvancedSearchRequest:
       type: object
       properties:
-        GeneralServiceProperties:
+        generalServiceProperties:
           type: object
           properties:
             '@type':
@@ -134,7 +134,7 @@ components:
             name:
               type: string
       example:
-        GeneralServiceProperties:
+        generalServiceProperties:
           name: Example resource name
     SearchResultList:
       type: object
