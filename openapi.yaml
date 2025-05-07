@@ -5,7 +5,7 @@ security:
 info:
   title: SIMPL-Open Catalogue Search API
   description: This API is for the quick search and advanced search of Resource descriptions in the Catalogue.
-  version: 1.0.7
+  version: 1.0.8
   contact:
     name: Simpl Programme
     email: cnect-simpl@ec.europa.eu
