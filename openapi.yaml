@@ -9,13 +9,13 @@ info:
   contact:
     name: Simpl Programme
     email: cnect-simpl@ec.europa.eu
-    url: https://simpl-programme.ec.europa.eu/v1
+    url: https://simpl-programme.ec.europa.eu
   license:
     name: European Union Public License (EUPL) 1.2
     url: "https://interoperable-europe.ec.europa.eu/sites/default/files/custom-page/attachment/eupl_v1.2_en.pdf"
 
 servers:
-  - url: https://adapter.dev.simpl-europe.eu
+  - url: https://adapter.dev.simpl-europe.eu/v1
     description: Generated server url
 
 paths:
