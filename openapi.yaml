@@ -38,6 +38,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/SearchResultList'
+              example:
+                totalCount: 1
+                items:
+                  - item:
+                    name: Example Resource
+                    description: This text serves as the short description of the Example Resource
         '401':
           description: Unauthorized
           content:
@@ -69,6 +75,9 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/AdvancedSearchRequest'
+          example:
+            generalServiceProperties:
+            name: Example resource name
       responses:
         '200':
           description: OK
@@ -76,6 +85,11 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/SearchResultList'
+              example:
+                items:
+                  - item:
+                    name: Example Resource
+                    description: This text serves as the short description of the Example Resource
         '401':
           description: Unauthorized
           content:
@@ -133,9 +147,6 @@ components:
               type: string
             name:
               type: string
-      example:
-        generalServiceProperties:
-          name: Example resource name
     SearchResultList:
       type: object
       properties:
@@ -159,11 +170,3 @@ components:
                     description: Short descriptive text of the resource
                     type: string
                 additionalProperties: true
-
-      example:
-        totalCount: 1
-        items:
-          - item:
-              name: Example Resource
-              description: This text serves as the short description of the Example Resource
-
