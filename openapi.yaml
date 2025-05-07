@@ -15,7 +15,7 @@ info:
     url: "https://interoperable-europe.ec.europa.eu/sites/default/files/custom-page/attachment/eupl_v1.2_en.pdf"
 
 servers:
-  - url: https://adapter.dev.simpl-europe.eu
+  - url: https://adapter.dev.simpl-europe.eu/v1
     description: Generated server url
 
 paths:
