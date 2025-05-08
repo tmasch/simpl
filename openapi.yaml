@@ -153,15 +153,10 @@ components:
     AdvancedSearchRequest:
       type: object
       properties:
-        simpl:GeneralServiceProperties:
-          type: object
-          properties:
-            '@type':
-              type: string
-            name:
-              type: string
+        description: A search request based on the Resource description schema of the dataspace
+        additionalProperties: true
       example:
-        generalServiceProperties:
+        simpl:generalServiceProperties:
           name: Example Resource 
     SearchResultList:
       type: object
