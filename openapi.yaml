@@ -5,7 +5,7 @@ security:
 info:
   title: SIMPL-Open Catalogue Search API
   description: This API is for the quick search and advanced search of Self descriptions in the Catalogue.
-  version: 1.0.8
+  version: 1.0.9
   contact:
     name: Simpl Programme
     email: cnect-simpl@ec.europa.eu
@@ -66,7 +66,7 @@ paths:
               example:
                 title: Internal Server Error
                 detail: The server encountered an unexpected condition which prevented it from fulfilling the request
-  /advancedCatalogueSearch:
+  /selfDescriptions/advancedSearch:
     post:
       tags:
         - Search
