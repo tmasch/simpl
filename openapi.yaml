@@ -4,8 +4,8 @@ security:
 
 info:
   title: SIMPL-Open Catalogue Search API
-  description: This API is for the quick search and advanced search of Resource descriptions in the Catalogue.
-  version: 1.0.7
+  description: This API is for the quick search and advanced search of Self descriptions in the Catalogue.
+  version: 1.0.8
   contact:
     name: Simpl Programme
     email: cnect-simpl@ec.europa.eu
@@ -18,95 +18,109 @@ servers:
   - url: https://adapter.dev.simpl-europe.eu/v1
     description: Generated server url
 
+tags:
+  - name: Search
+    description: Searching Self Descriptions in the Catalogue.
+
 paths:
-  /searchCatalogue/quick:
-    post:
+  /selfDescriptions:
+    get:
       tags:
-        - search
-      summary: Quick search in the Catalogue
+        - Search
+      summary: Quick search in the Catalogue by search string
       operationId: queryCatalogueQuickSearch
       parameters:
         - name: searchString
+          description: String to be searched in the Catalogue
           in: query
-          required: true
           schema:
             type: string
       responses:
-        '200':
+        "200":
           description: Results from a quick search in the Catalogue
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/SearchResultList'
+                $ref: "#/components/schemas/SearchResultList"
               example:
                 totalCount: 1
                 items:
                   - item:
                     name: Example Resource
                     description: This text serves as the short description of the Example Resource
-        '401':
+        "401":
           description: Unauthorized
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Problem'
+                $ref: "#/components/schemas/Problem"
               example:
                 title: Unauthorized
                 detail: The access token is missing or expired
-        '500':
+        "500":
           description: Internal Server Error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Problem'
+                $ref: "#/components/schemas/Problem"
               example:
                 title: Internal Server Error
                 detail: The server encountered an unexpected condition which prevented it from fulfilling the request
-
-  /searchCatalogue/advanced:
+  /advancedCatalogueSearch:
     post:
       tags:
-        - search
-      summary: Advanced search in the catalogue based on provided vocabulary
+        - Search
+      summary: Advanced search in the catalogue based on the Self Description schema of the dataspace
       operationId: queryCatalogueAdvancedSearch
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/AdvancedSearchRequest'
+                $ref: "#/components/schemas/AdvancedCatalogueSearchRequest"
+            example:
+              simpl:generalServiceProperties:
+                name: Example Resource
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/SearchResultList'
+                $ref: "#/components/schemas/SearchResultList"
               example:
                 totalCount: 1
                 items:
                   item:
                     name: Example Resource
                     description: This text serves as the short description of the Example Resource
-        '401':
+        "401":
           description: Unauthorized
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Problem'
+                $ref: "#/components/schemas/Problem"
               example:
                 title: Unauthorized
                 detail: The access token is missing or expired
-        '500':
+        "415":
+          description: Unsupported Media Type
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Problem"
+              example:
+                title: Unsupported Media Type
+                detail: The media type in the request payload cannot be processed.
+        "500":
           description: Internal Server Error
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Problem'
+                $ref: "#/components/schemas/Problem"
               example:
                 title: Internal Server Error
                 detail: The server encountered an unexpected condition which prevented it from fulfilling the request
-
 
 components:
   securitySchemes:
@@ -117,8 +131,7 @@ components:
 
   schemas:
     Problem:
-      description: 
-        A Problem Details object (RFC 9457).
+      description: A Problem Details object (RFC 9457).
         Additional properties specific to the problem type may be present.
       type: object
       properties:
@@ -126,7 +139,7 @@ components:
           type: string
           format: uri
           description: An absolute URI that identifies the problem type
-          default: about:blank  # kept for backwards-compatibility, type will be mandatory in problem-v2
+          default: about:blank # kept for backwards-compatibility, type will be mandatory in problem-v2
         href:
           type: string
           format: uri
@@ -150,14 +163,11 @@ components:
           type: string
           format: uri
           description: An absolute URI that identifies the specific occurrence of the problem. It may or may not yield further information if dereferenced.
-    AdvancedSearchRequest:
+    AdvancedCatalogueSearchRequest:
       type: object
-      description: A search request based on the Resource description schema of the dataspace
-      additionalProperties: 
+      description: A search request based on the Self Description schema of the dataspace
+      additionalProperties:
         type: object
-      example:
-        simpl:generalServiceProperties:
-          name: Example Resource 
     SearchResultList:
       type: object
       properties:
