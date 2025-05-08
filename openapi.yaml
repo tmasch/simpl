@@ -5,7 +5,7 @@ security:
 info:
   title: SIMPL-Open Catalogue Search API
   description: This API is for the quick search and advanced search of Resource descriptions in the Catalogue.
-  version: 1.0.6
+  version: 1.0.7
   contact:
     name: Simpl Programme
     email: cnect-simpl@ec.europa.eu
@@ -152,9 +152,9 @@ components:
           description: An absolute URI that identifies the specific occurrence of the problem. It may or may not yield further information if dereferenced.
     AdvancedSearchRequest:
       type: object
-      properties:
-        description: A search request based on the Resource description schema of the dataspace
-        additionalProperties: true
+      description: A search request based on the Resource description schema of the dataspace
+      additionalProperties: 
+        type: object
       example:
         simpl:generalServiceProperties:
           name: Example Resource 
@@ -181,6 +181,3 @@ components:
                     description: Short descriptive text of the resource
                     type: string
                 additionalProperties: true
-
-
-
