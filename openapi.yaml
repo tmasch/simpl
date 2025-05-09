@@ -3,7 +3,7 @@ security:
   - BearerAuth: []
 
 info:
-  title: SIMPL-Open Catalogue Search API
+  title: SIMPL-Open Query Mapper Adapter API
   description: This API is for the quick search and advanced search of Self descriptions in the Catalogue.
   version: 1.0.9
   contact:
