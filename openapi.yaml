@@ -1,193 +1,152 @@
-openapi: 3.0.0
-security:
-  - BearerAuth: []
-
+openapi: 3.0.3
 info:
-  title: SIMPL-Open Query Mapper Adapter API
-  description: This API is for the quick search and advanced search of Self descriptions in the Catalogue.
-  version: 1.0.9
+  title: Validation API
+  description: OpenApi documentation for the Validation API
+  version: 1.0.0
+  license:
+    name: European Union Public License (EUPL) 1.2
+    url: https://interoperable-europe.ec.europa.eu/sites/default/files/custom-page/attachment/eupl_v1.2_en.pdf
   contact:
     name: Simpl Programme
     email: cnect-simpl@ec.europa.eu
-    url: https://simpl-programme.ec.europa.eu/v1
-  license:
-    name: European Union Public License (EUPL) 1.2
-    url: "https://interoperable-europe.ec.europa.eu/sites/default/files/custom-page/attachment/eupl_v1.2_en.pdf"
-
+    url: https://simpl-programme.ec.europa.eu/
 servers:
-  - url: https://adapter.dev.simpl-europe.eu/v1
-    description: Generated server url
-
+  - url: https://tbd.dev.simpl-europe.eu
+security:
+  - bearerAuth: []
 tags:
-  - name: Search
-    description: Searching Self Descriptions in the Catalogue.
-
+  - name: SD Validation Controller
+    description: Endpoint for Self-Description (SD) validation
 paths:
-  /selfDescriptions:
-    get:
-      tags:
-        - Search
-      summary: Quick search in the Catalogue by search string
-      operationId: queryCatalogueQuickSearch
-      parameters:
-        - name: searchString
-          description: String to be searched in the Catalogue
-          in: query
-          schema:
-            type: string
-      responses:
-        "200":
-          description: Results from a quick search in the Catalogue
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/SearchResultList"
-              example:
-                totalCount: 1
-                items:
-                  - item:
-                    name: Example Resource
-                    description: This text serves as the short description of the Example Resource
-        "401":
-          description: Unauthorized
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Problem"
-              example:
-                title: Unauthorized
-                detail: The access token is missing or expired
-        "500":
-          description: Internal Server Error
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Problem"
-              example:
-                title: Internal Server Error
-                detail: The server encountered an unexpected condition which prevented it from fulfilling the request
-  /selfDescriptions/advancedSearch:
+  /api/v1/resourceAddress/validate:
     post:
+      summary: Validate a resource address JSON against a provided JSON Schema Template
+      description: Receives as input a JSON containing the values of a resource address and a JSON schema template with constraints, and returns the result of the validation as output.
       tags:
-        - Search
-      summary: Advanced search in the catalogue based on the Self Description schema of the dataspace
-      operationId: queryCatalogueAdvancedSearch
+        - Resource Address Validation Controller
+      operationId: validateResourceAddress
       requestBody:
         required: true
         content:
-          application/json:
+          multipart/form-data:
             schema:
-                $ref: "#/components/schemas/AdvancedCatalogueSearchRequest"
-            example:
-              simpl:generalServiceProperties:
-                name: Example Resource
+              type: object
+              required:
+                - jsonSchema
+                - jsonValue
+              properties:
+                jsonSchema:
+                  type: string
+                  format: binary
+                  description: JSON Schema Template file for validation
+                jsonValue:
+                  type: string
+                  format: binary
+                  description: Resource address JSON value to validate
       responses:
-        "200":
-          description: OK
+        '200':
+          description: Validation outcome
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/SearchResultList"
-              example:
-                totalCount: 1
-                items:
-                  item:
-                    name: Example Resource
-                    description: This text serves as the short description of the Example Resource
-        "401":
-          description: Unauthorized
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Problem"
-              example:
-                title: Unauthorized
-                detail: The access token is missing or expired
-        "415":
+                $ref: '#/components/schemas/JsonValidationResponse'
+              examples:
+                success:
+                  summary: Valid value
+                  value:
+                    valid: true
+                failure:
+                  summary: Invalid value
+                  value:
+                    valid: false
+                    errors:
+                      - message: "required key [id] not found"
+                        pointer: "/"
+        '400':
+          description: Bad Request - Missing or malformed schema/value
+        '403':
+          description: Forbidden – the client does not have access rights
+        '406':
+          description: Not Acceptable
+        '415':
           description: Unsupported Media Type
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Problem"
-              example:
-                title: Unsupported Media Type
-                detail: The media type in the request payload cannot be processed.
-        "500":
+        '500':
           description: Internal Server Error
+ 
+  /api/v1/sd/validate:
+    post:
+      tags:
+        - SD Validation Controller
+      summary: Validate the JSON-LD of a Self-Description (SD)
+      description: Receives a JSON-LD file containing a Self-Description, a SHACL file for validation, and an ecosystem identifier. Returns the validated JSON-LD upon successful validation.
+      operationId: validate
+      parameters:
+        - name: ecosystem
+          in: query
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              required:
+                - jsonldFile
+                - shapeFile
+              type: object
+              properties:
+                jsonldFile:
+                  type: string
+                  format: binary
+                shapeFile:
+                  type: string
+                  format: binary
+      responses:
+        '200':
+          description: Successfully validated SD JSON-LD
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Problem"
-              example:
-                title: Internal Server Error
-                detail: The server encountered an unexpected condition which prevented it from fulfilling the request
-
+                type: object
+              examples:
+                Validated SD JSON-LD:
+                  description: Validated SD JSON-LD
+                  value:
+                    '@context':
+                      gax-validation: http://w3id.org/gaia-x/validation#
+                      rdf: http://www.w3.org/1999/02/22-rdf-syntax-ns#
+                      sh: http://www.w3.org/ns/shacl#
+                      simpl: http://w3id.org/gaia-x/simpl#
+                      skos: http://www.w3.org/2004/02/skos/core#
+                      xsd: http://www.w3.org/2001/XMLSchema#
+                    '@id': did:web:registry.gaia-x.eu:DataOffering:12Ar124fx
+                    rdf:type:
+                      '@id': simpl:DataOffering
+                    ...: ...
 components:
-  securitySchemes:
-    BearerAuth:
-      type: http
-      scheme: bearer
-      bearerFormat: JWT
-
   schemas:
-    Problem:
-      description: A Problem Details object (RFC 9457).
-        Additional properties specific to the problem type may be present.
+    JsonValidationResponse:
       type: object
+      required:
+        - valid
       properties:
-        type:
-          type: string
-          format: uri
-          description: An absolute URI that identifies the problem type
-          default: about:blank # kept for backwards-compatibility, type will be mandatory in problem-v2
-        href:
-          type: string
-          format: uri
-          description: An absolute URI that, when dereferenced, provides human-readable documentation for the problem type (e.g. using HTML).
-        title:
-          type: string
-          description: A short summary of the problem type. Written in English and readable for engineers (usually not suited for non technical stakeholders and not localized).
-          example: Service Unavailable
-        status:
-          type: integer
-          format: int32
-          description: The HTTP status code generated by the origin server for this occurrence of the problem.
-          minimum: 400
-          maximum: 600
-          exclusiveMaximum: true
-          example: 503
-        detail:
-          type: string
-          description: A human-readable explanation specific to this occurrence of the problem
-        instance:
-          type: string
-          format: uri
-          description: An absolute URI that identifies the specific occurrence of the problem. It may or may not yield further information if dereferenced.
-    AdvancedCatalogueSearchRequest:
-      type: object
-      description: A search request based on the Self Description schema of the dataspace
-      additionalProperties:
-        type: object
-    SearchResultList:
-      type: object
-      properties:
-        totalCount:
-          type: integer
-          description: Total number of search results
-        items:
-          description: List of search results
+        valid:
+          type: boolean
+          description: Indicates if the value is valid
+        errors:
           type: array
+          description: List of validation errors
           items:
             type: object
             properties:
-              item:
-                description: Individual search result
-                type: object
-                properties:
-                  name:
-                    description: Name of the resource
-                    type: string
-                  description:
-                    description: Short descriptive text of the resource
-                    type: string
-                additionalProperties: true
+              message:
+                type: string
+                description: Human-readable error message
+              pointer:
+                type: string
+                description: JSON pointer to the offending field
+
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
